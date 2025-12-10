@@ -18,6 +18,7 @@ FunASR C++是一个高性能的语音识别引擎，支持：
 sudo yum -y install openblas-devel openssl-devel
 ```
 
+
 ### 下载三方库
 ```bash
 cd third_party
