@@ -22,10 +22,10 @@ sudo yum -y install openblas-devel openssl-devel
 ### 下载三方库
 ```bash
 cd third_party
-wget https://isv-data.oss-cn-hangzhou.aliyuncs.com/ics/MaaS/ASR/dep_libs/onnxruntime-linux-x64-1.14.0.tgz
+wget https://isv-data.oss-cn-hangzhou.aliyuncs.com/ics/MaaS/ASR/dep_libs/onnxruntime-aarch64-1.14.0.tgz
 tar -zxvf onnxruntime-linux-aarch64-1.14.0.tgz
 wget https://isv-data.oss-cn-hangzhou.aliyuncs.com/ics/MaaS/ASR/dep_libs/ffmpeg-master-latest-linuxarm64-gpl-shared.tar.xz
-tar -xvf ffmpeg-master-latest-linux64-gpl-shared.tar.xz
+tar -xvf ffmpeg-master-latest-linuxarm64-gpl-shared.tar.xz
 ```
 
 ### 编译
