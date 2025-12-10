@@ -36,8 +36,6 @@ _deps/
 
 # Build directories
 build/
-bin/
-!bin/.gitkeep
 
 # IDE files
 .vscode/
