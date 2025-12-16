@@ -458,8 +458,39 @@ void WebSocketServer::on_message(websocketpp::connection_hdl hdl,
         return;
       }
 
-      if (jsonresult.contains("wav_name")) {
-        msg_data->msg["wav_name"] = jsonresult["wav_name"];
+         // 解析客户端传入的 traceId，并存入 msg_data->msg["wav_name"]，后续用于返回包 header.traceId
+      // 兼容两种格式：
+      // 1) 旧格式：{"header":{"traceId":"xxx", ...}, ...}
+      // 2) 新格式：{"type":"request","data":{"header":{"traceId":"xxx", ...}, ...}}
+      {
+        std::string trace_id;
+        try {
+          // 优先从旧格式顶层 header 中取
+          if (jsonresult.contains("header") &&
+              jsonresult["header"].is_object() &&
+              jsonresult["header"].contains("traceId") &&
+              jsonresult["header"]["traceId"].is_string()) {
+            trace_id = jsonresult["header"]["traceId"].get<std::string>();
+          }
+          // 如果顶层没有，再从 data.header 中取（你给的示例格式）
+          else if (jsonresult.contains("data") &&
+                   jsonresult["data"].is_object() &&
+                   jsonresult["data"].contains("header") &&
+                   jsonresult["data"]["header"].is_object() &&
+                   jsonresult["data"]["header"].contains("traceId") &&
+                   jsonresult["data"]["header"]["traceId"].is_string()) {
+            trace_id = jsonresult["data"]["header"]["traceId"].get<std::string>();
+          }
+        } catch (std::exception const &e) {
+          LOG(ERROR) << "parse traceId failed: " << e.what();
+        }
+
+        if (!trace_id.empty()) {
+          msg_data->msg["wav_name"] = trace_id;
+        } else if (jsonresult.contains("wav_name")) {
+          // 兼容旧客户端直接传 wav_name 的用法
+          msg_data->msg["wav_name"] = jsonresult["wav_name"];
+        }
       }
       if (jsonresult.contains("mode")) {
         msg_data->msg["mode"] = jsonresult["mode"];
